@@ -11,23 +11,21 @@ router.post('/', (req, res)=>{
     let jsonFilePath = path.join(__dirname, "../../db/db.json");
     let newNote = req.body;
 
-    let highestId = 99;
+    let startingId = 0;
         
         for (let i = 0; i < db.length; i++) {
             let individualNote = db[i];
-            console.log(individualNote.id)
 
-            if (individualNote.id > highestId) {
+            if (individualNote.id > startingId) {
                 
-                highestId = individualNote.id;
+                startingId = individualNote.id;
             }
         }
         
-        newNote.id = highestId + 1;
+        newNote.id = startingId + 1;
         
         db.push(newNote)
 
-        
         fs.writeFile(jsonFilePath, JSON.stringify(db), function (err) {
 
             if (err) {
@@ -37,6 +35,29 @@ router.post('/', (req, res)=>{
         });
          
         res.json(newNote);
+    });
+
+    router.delete('/:id', function (req, res) {
+        let jsonFilePath = path.join(__dirname, "../../db/db.json");
+        
+        for (let i = 0; i < db.length; i++) {
+    
+            if (db[i].id == req.params.id) {
+                
+                db.splice(i, 1);
+                break;
+            }
+        }
+        
+        fs.writeFileSync(jsonFilePath, JSON.stringify(db), function (err) {
+    
+            if (err) {
+                return console.log(err);
+            } else {
+                console.log("Your note was deleted!");
+            }
+        });
+        res.json(db);
     });
 
     module.exports = router
