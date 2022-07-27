@@ -14,11 +14,11 @@ router.post('/', (req, res)=>{
     let startingId = 0;
         
         for (let i = 0; i < db.length; i++) {
-            let individualNote = db[i];
+            let note = db[i];
 
-            if (individualNote.id > startingId) {
+            if (note.id > startingId) {
                 
-                startingId = individualNote.id;
+                startingId = note.id;
             }
         }
         
